@@ -5,7 +5,7 @@
 
 
 # Load and install packages
-required.packages <- c( "caret", "e1071", "rgdal", "raster", "doParallel", "maptools", "dplyr", "sp", "snow", "snowfall")
+required.packages <- c( "caret", "clhs", "e1071", "rgdal", "raster", "doParallel", "maptools", "dplyr", "sp", "snow", "snowfall")
 new.packages <- required.packages[!(required.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 lapply(required.packages, require, character.only=T)
