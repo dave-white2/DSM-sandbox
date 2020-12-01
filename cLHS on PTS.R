@@ -120,10 +120,10 @@ subset.idx <- s.clhs$index_samples
 # check visually:
 par(mar = c(1,1,1,1))
 plot(r.sagawi, axes=FALSE)
-points(s[subset.idx, ], bg = 'red', pch=21)
+points(s.clhs[subset.idx, ], bg = 'red', pch=21)
 
 # save cLHS points to shp
 # change dsn to a working directory that you want to save to
 # change layer name (file name)
-writeOGR(s[subset.idx, ], dsn = 'C:/workspace2/clhs', layer = 'clhs_points_rgrd', driver = 'ESRI Shapefile', overwrite_layer = TRUE)
+writeOGR(s.clhs[subset.idx, ], dsn = 'C:/workspace2/clhs', layer = 'clhs_points_rgrd', driver = 'ESRI Shapefile', overwrite_layer = TRUE)
 
