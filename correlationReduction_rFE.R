@@ -12,7 +12,7 @@ rm(required.packages, new.packages)
 
 # Load Raster Data
 # set working directory
-setwd("C:/DSM/test_cov")
+setwd("C:/cov")
 
 # read in raster layer names
 rList=list.files(getwd(), pattern="tif$", full.names = FALSE)
@@ -25,9 +25,14 @@ names(rStack)
 # create a dataframe
 # for the following data reduction techniques, it is necessary to convert the raster stack into a data frame. This may cause problems with large raster stacks. my recommendation is to subset the raster stack by creating a regular sample of points. 
 # If you need to create a regular sample due to a large set of covariates, that could be completed as follows:
-#df <- na.omit(as.data.frame(sampleRegular(rStack, na.rm=T, xy=F, size = (length(rStack$gnp_clay_index57)/2))))
+df <- na.omit(as.data.frame(sampleRegular(rStack, na.rm=T, xy=F, size = 100))) #(length(rStack$calseddry)/2))))
 
-df <- na.omit(as.data.frame(rStack, na.rm=T, xy=F))
+plot(rStack$nd3t1dry)
+
+length(rStack$calseddry)
+
+gc()
+#df <- na.omit(as.data.frame(rStack, na.rm=T, xy=F))
 
 
 # filtering by correlation
@@ -40,7 +45,7 @@ corMat <- cor(df)
 corrplot(corMat, method = "circle")
 
 # find high degree of correlation, cutoff is the threshold to set. If cutoff = 0.75 then covariates that are >= 75% correlated are removed
-highCorr <- findCorrelation(corMat, cutoff = 0.75)
+highCorr <- findCorrelation(corMat, cutoff = 0.85)
 
 # remove covariates with high degree of correlation
 df <- if(length(highCorr) > 0){
@@ -79,7 +84,7 @@ shp.pts <- shp.pts[-c(1:12,14:18)]
 names(shp.pts)
 
 ## Plot to ensure alignment bw points and rasters
-plot(r.stack$rockdry)
+plot(r.stack$calsedwet)
 plot(shp.pts, add=TRUE)
 
 
@@ -132,13 +137,17 @@ comp <- as.data.frame(train.pts)
 names(comp)
 
 # remove the ID column and change the first column name to class
-comp <- comp[,-c(1,107,108)] # removes the ID column
+comp <- comp[,-c(1,43,42)] # removes the ID column
 names(comp) # check the column names to make sure ID is removed
 names(comp)[c(1)] <- c('Class') # change name of first col to class
 names(comp) # check names of comp
 
 # check the levels (classes) of comp class
 levels(comp$Class)
+
+# make sure Class is a factor
+
+comp$Class <- as.factor(comp$Class)
 
 # remove NA values from class
 #comp <- comp[complete.cases(comp), ]
@@ -193,10 +202,11 @@ gc()
 # 4.3  Look at the results
 rf.RFE
 
+#confusion matrix
 rf.RFE$fit
 
-rf.RFE$results
 
+#plotting rFE
 plot(rf.RFE) # default plot is for Accuracy, but it can also be changed to Kappa
 plot(rf.RFE, metric="Kappa", main='RFE Kappa')
 plot(rf.RFE, metric="Accuracy", main='RFE Accuracy')
@@ -223,7 +233,11 @@ a <- predictors(rf.RFE)[1:5]
 
 # subsed the raser stack to the selected covariates
 r.stack.model <- subset(r.stack, a)
+
+names(r.stack.model)
+
 # subset the data frame points with the number of covariates selected
 comp.sub <- (comp[,c("Class", a)])
 names(comp.sub)
+
 
