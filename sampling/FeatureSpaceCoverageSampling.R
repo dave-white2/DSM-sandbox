@@ -27,7 +27,7 @@ names(rstk)
 
 # create a grid of points (n=gsize) to represent the raster stack
 # - this can be done many ways sampleRegular is one method
-gsize <- 10000 # 25% of the raster data
+gsize <- 10000 
 samp.reg <- na.omit(sampleRegular(rstk, size = gsize, sp=T))
 
 samp.reg.df <- na.omit(as.data.frame(samp.reg))
