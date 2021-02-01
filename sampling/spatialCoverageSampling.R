@@ -47,4 +47,4 @@ plot(rstk)
 points(samp.pts, pch=19, col="blue", cex=1.2)
 
 #save pts to shpfile
-writeOGR(samp.pts, dsn = "./clhs.pts", layer="fscs135.pts", driver = "ESRI Shapefile", overwrite_layer = T)
+writeOGR(samp.pts, dsn = "./clhs.pts", layer="SPcov135.pts", driver = "ESRI Shapefile", overwrite_layer = T)
