@@ -1,5 +1,8 @@
 # project area stratification and generation of clhs points
 
+# this is a test and not ready for use due to the iPCA function implemented below
+# 1/31/21
+
 # et up working environment
 # load and install required packages ####
 required.packages <- c("clhs","raster", "caret", "corrplot", "psych", "sp", "rgdal", "factoextra",
