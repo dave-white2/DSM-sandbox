@@ -88,7 +88,7 @@ aHELS <- function(r_stack, pts, nosP){
   covDens # density matrix
   
   # point data manipulation
-  att <- length(points)#checking for shpfile attributes
+  att <- length(pts)#checking for shpfile attributes
   pts <- pts[, -(1:att)] #removing all attribute columns, only need location data
   
   # extract covariate values
