@@ -1,0 +1,137 @@
+---
+title: "Assigning Generalized Horizon Labels for Adelino"### <----  CHANGE SOIL NAME HERE
+author: "Dave White"
+date: "May 9, 2019"
+output: html_document
+---
+```{r setup, include=TRUE, echo=FALSE, warning=FALSE}
+# knit options
+knitr::opts_chunk$set(echo=FALSE, results='asis', warning=FALSE, message=FALSE, background="#F7F7F7", fig.retina=1, dev="png", tidy=FALSE, verbose=FALSE)
+
+options(stringsAsFactors = FALSE)
+```
+
+```{r load and install libraries, include=FALSE}
+
+# load and install required packages
+required.packages <- c("aqp", "soilDB", "sharpshootR", "igraph", "ape", "latticeExtra", "plyr", 
+                       "lattice", "cluster", "MASS", "soilReports", "knitr", "reshape2", "circular", 
+                       "RColorBrewer", "maps", "maptools", "mapview")
+new.packages <- required.packages[!(required.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+lapply(required.packages, require, character.only=T)
+rm(required.packages, new.packages)
+
+
+```
+```{r pedons}
+# get pedons from NASIS
+pedons <- fetchNASIS(from='pedons')
+```
+# Plot Soil Profiles
+```{r soiilprofiles}
+par(mar=c(0,0,2,1))
+plot(pedons, label='site_id')
+
+```
+# Horizon Designations used
+```{r used}
+ped.tab <- sort(table(pedons$hzname), decreasing=TRUE)
+kable(ped.tab)#, caption="hzn designations used")
+```
+``` {r constgraph}
+
+tp <- hzTransitionProbabilities(pedons, 'hzname')
+par(mar=c(1,1,1,1))
+plotSoilRelationGraph(tp, graph.mode = 'directed', edge.arrow.size=0.5, edge.scaling.factor=2, vertex.label.cex=0.75, vertex.label.family='sans', main="Relationships Between Horizons")
+
+
+
+```
+
+# Horizon Mid-Points
+
+```{r hzn midpoints}
+# compute horizon mid-points
+pedons$mid <- with(horizons(pedons), (hzdept + hzdepb) / 2)
+
+# sort horizon designation by group-wise median values
+hz.designation.by.median.depths <- names(sort(tapply(pedons$mid, pedons$hzname, median)))
+
+# plot the distribution of horizon mid-points by designation
+bwplot(mid ~ factor(hzname, levels=hz.designation.by.median.depths), 
+       data=horizons(pedons), 
+       ylim=c(155, -5), ylab='Horizon Mid-Point Depth (cm)', 
+       scales=list(y=list(tick.number=10)), 
+       panel=function(...) {
+         panel.abline(h=seq(0, 140, by=10), v=1:length(hz.designation.by.median.depths), col=grey(0.8), lty=3)
+         panel.bwplot(...)
+       })
+
+```
+
+
+# General horizon lables
+## This is the only section that needs to be edited
+```{r genhz, include=TRUE, echo=TRUE}
+#### CHANGE THE GENERAL HORIZON LABELS HERE, THIS WILL BE COPIED INTO A NEW DOCUMENT ####
+
+# Generalized Horizon Labels
+  n = c("A", 
+        "Bw",
+        "C")
+# Groupings of Horizons using Regex rules  
+  p = c("A",
+        "B|^C",
+        "^2C$")
+
+
+```
+# more on regex [here](http://ncss-tech.github.io/AQP/aqp/gen-hz-assignment.html)
+
+
+
+
+
+
+
+
+
+
+
+```{r genhzn tab, include=FALSE, echo=FALSE}
+pedons$genhz <- generalize.hz(pedons$hzname, n, p)
+# cross-tabulate original horizon designations and GHL
+tab <- table(pedons$genhz, pedons$hzname)
+addmargins(tab)
+kable(tab)
+
+
+```
+
+
+#Display Groupings
+```{r groupings}
+# convert contingency table -> adj. matrix
+m <- genhzTableToAdjMat(tab)
+# plot using a function from the sharpshootR package
+par(mar=c(1,1,1,1))
+plotSoilRelationGraph(m, graph.mode = 'directed', edge.arrow.size=0.5)
+
+```
+
+#Evaluate Generalized Horizon Labels
+```{r evaluate}
+# make a palette of colors, last color is for not-used class
+cols <- c(grey(0.33), 'orange', 'orangered', 'chocolate', 'green', 'blue', 'yellow')
+# assign a color to each generalized horizon label
+hz.names <- levels(pedons$genhz)
+pedons$genhz.soil_color <- cols[match(pedons$genhz, hz.names)]
+# plot generalized horizons via color and add a legend
+par(mar=c(4,0,0,0))
+plot(pedons, name='hzname', print.id=FALSE, cex.names=0.75, axis.line.offset=-4, color='genhz.soil_color')
+legend('bottomleft', legend=hz.names, pt.bg=c(cols), pch=22, bty='n', cex=1)
+
+
+```
+

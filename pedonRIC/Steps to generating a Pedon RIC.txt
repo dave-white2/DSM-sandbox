@@ -1,0 +1,29 @@
+
+
+STEP 1:
+Load a selected set of pedons and sites into NASIS, use the list provided for the given component
+
+STEP 2:
+OPEN GenHznLab.Rmd 
+Change the soil series/component name
+Run this document by selecting the Knit function at the top of RStudio
+
+STEP 3:
+Evaluate the results
+Edit the horizon rules
+Re-run the document by selecting Knit, when you think you have the rules correct
+
+Keep doing this process until you feel like the generalized horizon designations are correct.
+
+STEP 4: Open the Series_Rules.R document
+Edit this to include the generalized horizon ruled determined in the above steps
+Be sure to change the series name
+Save this document as Series_Rules.R but be sure to change to the actual series or component name
+
+Step 5 Open the PedonRIC.RMD document
+Change the series name in all places noted in the top of the document
+Run the document by selecting the Knit function at the top
+This will generate an HTML file
+Open in Browser
+Print as PDF - save to computer
+Print out a physical copy
