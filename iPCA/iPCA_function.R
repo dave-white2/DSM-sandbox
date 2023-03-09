@@ -47,6 +47,7 @@ df <- na.omit(as.data.frame(r.stack, na.rm=T, xy=F))
 
 ############## The iPCA function
 
+#iPCA function, returns the names of covariates to keep
 iPCA <- function(df, thresh = 95, ...){
   repeat{
     # create progress bar
@@ -62,7 +63,7 @@ iPCA <- function(df, thresh = 95, ...){
     loadings$lf <- rowSums(abs(loadings))
     loadings <- loadings[order(-loadings$lf), ]
     loadings$cumVar <- cum.var
-    idealthresh = thresh + 1
+    idealthresh = thresh
     score <- sum(tail(cum.var, 2))
     if(score >= (idealthresh + 100)){
       remove <- which(loadings$cumVar >= idealthresh)
@@ -76,7 +77,7 @@ iPCA <- function(df, thresh = 95, ...){
       }
       close(pb)
     } 
-    else if (score <= idealthresh + 100) break
+    else if (cum.var[(length(cum.var)-1)] <= idealthresh) break
   }
   return(df)
 }
