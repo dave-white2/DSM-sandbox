@@ -9,7 +9,7 @@
 
 suppressPackageStartupMessages({
   # Load required packages; install if missing
-  required.packages <- c("elevatr", "terra", "sf")
+  required.packages <- c("elevatr", "terra", "sf", "parallel")
   new.packages <- required.packages[!(required.packages %in% installed.packages()[, "Package"])]
   if (length(new.packages)) install.packages(new.packages)
   lapply(required.packages, require, character.only = TRUE)
@@ -51,3 +51,4 @@ plot(clipped_dem, main = "USGS 3DEP Best Available Data")
 
 # 6. Save the mosaiced/clipped DEM
 writeRaster(clipped_dem, "D:/federal_lands/26_Spodic_Intensity/3dep_data_clipped.tif", overwrite=TRUE)
+
